@@ -173,6 +173,13 @@ struct SupervisorDetailView: View {
     }
 
     private func saveChanges() {
+        // Validate required fields
+        guard !editedName.trimmingCharacters(in: .whitespaces).isEmpty else {
+            print("Error: Supervisor name cannot be empty")
+            // TODO: Present an error alert instead of just printing
+            return
+        }
+
         var updated = supervisor
         updated.name = editedName
         updated.email = editedEmail.isEmpty ? nil : editedEmail
