@@ -6,8 +6,6 @@ struct SessionListItemView: View {
     var onEdit: (() -> Void)? = nil
     var onHide: (() -> Void)? = nil
 
-    @State private var showContextMenu = false
-
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             // Title and supervisor

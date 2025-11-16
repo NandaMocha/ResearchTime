@@ -24,8 +24,11 @@ struct RichTextEditorView: View {
                     .frame(minHeight: 200)
             }
         }
-        .border(Color.appBorder, width: 1)
-        .cornerRadius(6)
+        .overlay(
+            RoundedRectangle(cornerRadius: 6)
+                .stroke(Color.appBorder, lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 6))
     }
 }
 
