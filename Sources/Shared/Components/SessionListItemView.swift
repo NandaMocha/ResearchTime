@@ -3,8 +3,8 @@ import SwiftUI
 struct SessionListItemView: View {
     let session: SupervisionSession
     let supervisorName: String
-    var onEdit: (() -> Void)? = nil
-    var onHide: (() -> Void)? = nil
+    var onEdit: (() -> Void)?
+    var onHide: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {

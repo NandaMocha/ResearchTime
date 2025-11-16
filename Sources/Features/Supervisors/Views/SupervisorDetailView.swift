@@ -179,7 +179,7 @@ struct SupervisorDetailView: View {
         updated.phone = editedPhone.isEmpty ? nil : editedPhone
         updated.department = editedDepartment.isEmpty ? nil : editedDepartment
 
-        Task {
+        Task { @MainActor in
             do {
                 try await viewModel.updateSupervisor(updated)
                 isEditing = false
