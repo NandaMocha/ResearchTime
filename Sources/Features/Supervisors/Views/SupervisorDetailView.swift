@@ -8,6 +8,8 @@ struct SupervisorDetailView: View {
     @State private var editedEmail = ""
     @State private var editedPhone = ""
     @State private var editedDepartment = ""
+    @State private var showErrorAlert = false
+    @State private var errorMessage = ""
 
     var body: some View {
         VStack(spacing: 0) {
@@ -83,6 +85,11 @@ struct SupervisorDetailView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.appMain)
+        .alert("Error", isPresented: $showErrorAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(errorMessage)
+        }
         .task {
             await viewModel.loadSessionsForSupervisor(supervisor)
         }
@@ -175,9 +182,20 @@ struct SupervisorDetailView: View {
     private func saveChanges() {
         // Validate required fields
         guard !editedName.trimmingCharacters(in: .whitespaces).isEmpty else {
-            print("Error: Supervisor name cannot be empty")
-            // TODO: Present an error alert instead of just printing
+            errorMessage = "Supervisor name cannot be empty"
+            showErrorAlert = true
             return
+        }
+
+        // Validate email format if provided
+        if !editedEmail.isEmpty {
+            let emailRegex = #"^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$"#
+            let emailPredicate = NSPredicate(format: "SELF MATCHES[c] %@", emailRegex)
+            guard emailPredicate.evaluate(with: editedEmail) else {
+                errorMessage = "Invalid email format"
+                showErrorAlert = true
+                return
+            }
         }
 
         var updated = supervisor
@@ -191,8 +209,8 @@ struct SupervisorDetailView: View {
                 try await viewModel.updateSupervisor(updated)
                 isEditing = false
             } catch {
-                print("Error updating supervisor: \(error)")
-                // TODO: Present an error state in the UI instead of just printing.
+                errorMessage = "Failed to update supervisor: \(error.localizedDescription)"
+                showErrorAlert = true
             }
         }
     }
