@@ -21,9 +21,6 @@ class SupervisionFormViewModel: ObservableObject {
         } else {
             self.session = SupervisionSession()
         }
-        Task {
-            await loadData()
-        }
     }
 
     @MainActor
@@ -40,9 +37,9 @@ class SupervisionFormViewModel: ObservableObject {
     func saveSession() async throws {
         session.updatedAt = Date()
         if isEditMode {
-            try persistenceService.updateSession(session)
+            try await persistenceService.updateSession(session)
         } else {
-            try persistenceService.createSession(session)
+            try await persistenceService.createSession(session)
         }
     }
 
@@ -73,8 +70,9 @@ class SupervisionFormViewModel: ObservableObject {
     @MainActor
     func addNewSupervisor() async throws {
         let supervisor = Supervisor(name: newSupervisorName)
-        try persistenceService.createSupervisor(supervisor)
-        await loadData()
+        try await persistenceService.createSupervisor(supervisor)
+        supervisors.append(supervisor)
+        supervisors.sort { $0.name < $1.name }
         session.supervisorId = supervisor.id
         showAddSupervisor = false
         newSupervisorName = ""
@@ -84,8 +82,9 @@ class SupervisionFormViewModel: ObservableObject {
     func addNewTopic() async throws {
         var topic = Topic(name: newTopicName)
         topic.relatedSupervisorIds = selectedSupervisors
-        try persistenceService.createTopic(topic)
-        await loadData()
+        try await persistenceService.createTopic(topic)
+        topics.append(topic)
+        topics.sort { $0.name < $1.name }
         session.topicId = topic.id
         showAddTopic = false
         newTopicName = ""

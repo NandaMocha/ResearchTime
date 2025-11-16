@@ -58,9 +58,9 @@ struct SupervisionFormView: View {
                             .foregroundColor(.appText)
                         HStack(spacing: 8) {
                             Picker("Supervisor", selection: $viewModel.session.supervisorId) {
-                                Text("Select a supervisor").tag(UUID())
+                                Text("Select a supervisor").tag(nil as UUID?)
                                 ForEach(viewModel.supervisors) { supervisor in
-                                    Text(supervisor.name).tag(supervisor.id)
+                                    Text(supervisor.name).tag(supervisor.id as UUID?)
                                 }
                             }
                             .frame(maxWidth: .infinity)
@@ -104,9 +104,9 @@ struct SupervisionFormView: View {
                             .foregroundColor(.appText)
                         HStack(spacing: 8) {
                             Picker("Topic", selection: $viewModel.session.topicId) {
-                                Text("Select a topic").tag(UUID())
+                                Text("Select a topic").tag(nil as UUID?)
                                 ForEach(viewModel.topics) { topic in
-                                    Text(topic.name).tag(topic.id)
+                                    Text(topic.name).tag(topic.id as UUID?)
                                 }
                             }
                             .frame(maxWidth: .infinity)
@@ -195,7 +195,7 @@ struct SupervisionFormView: View {
                                 .font(.caption)
                                 .foregroundColor(.appTextSecondary)
                         } else {
-                            ForEach(Array(viewModel.session.questions.enumerated()), id: \.element.id) { index, question in
+                            ForEach(Array(viewModel.session.questions.enumerated()), id: \.element.id) { index, _ in
                                 QuestionItemView(
                                     question: $viewModel.session.questions[index],
                                     onRemove: { viewModel.removeQuestion(at: index) }
@@ -224,7 +224,7 @@ struct SupervisionFormView: View {
                                 .font(.caption)
                                 .foregroundColor(.appTextSecondary)
                         } else {
-                            ForEach(Array(viewModel.session.actionItems.enumerated()), id: \.element.id) { index, actionItem in
+                            ForEach(Array(viewModel.session.actionItems.enumerated()), id: \.element.id) { index, _ in
                                 ActionItemView(
                                     actionItem: $viewModel.session.actionItems[index],
                                     onRemove: { viewModel.removeActionItem(at: index) }
@@ -311,12 +311,15 @@ struct SupervisionFormView: View {
                 }
             }
         )
+        .task {
+            await viewModel.loadData()
+        }
     }
 }
 
 struct QuestionItemView: View {
     @Binding var question: Question
-    var onRemove: (() -> Void)? = nil
+    var onRemove: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -350,7 +353,7 @@ struct QuestionItemView: View {
 
 struct ActionItemView: View {
     @Binding var actionItem: ActionItem
-    var onRemove: (() -> Void)? = nil
+    var onRemove: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {

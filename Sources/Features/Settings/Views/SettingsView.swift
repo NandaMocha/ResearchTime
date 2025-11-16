@@ -318,7 +318,7 @@ struct AddSupervisorSheet: View {
                         department: department.isEmpty ? nil : department
                     )
                     Task {
-                        try persistenceService.createSupervisor(supervisor)
+                        try await persistenceService.createSupervisor(supervisor)
                         await MainActor.run {
                             onSaved()
                             isPresented = false
@@ -381,7 +381,7 @@ struct AddTopicSheet: View {
                 Button("Add") {
                     let topic = Topic(name: name, relatedSupervisorIds: selectedSupervisorIds)
                     Task {
-                        try persistenceService.createTopic(topic)
+                        try await persistenceService.createTopic(topic)
                         await MainActor.run {
                             onSaved()
                             isPresented = false
@@ -399,8 +399,14 @@ struct AddTopicSheet: View {
 }
 
 #Preview {
-    SettingsView(
-        viewModel: SettingsViewModel(persistenceService: try! JSONPersistenceService()),
-        themeManager: ThemeManager()
-    )
+    Group {
+        if let service = try? JSONPersistenceService() {
+            SettingsView(
+                viewModel: SettingsViewModel(persistenceService: service),
+                themeManager: ThemeManager()
+            )
+        } else {
+            Text("Failed to create JSONPersistenceService for preview.")
+        }
+    }
 }

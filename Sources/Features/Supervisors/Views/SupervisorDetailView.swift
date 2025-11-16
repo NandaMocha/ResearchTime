@@ -191,8 +191,14 @@ struct SupervisorDetailView: View {
 }
 
 #Preview {
-    SupervisorDetailView(
-        viewModel: SupervisorListViewModel(persistenceService: try! JSONPersistenceService()),
-        supervisor: Supervisor(name: "Prof. Dr. Smith", email: "smith@university.edu", department: "Computer Science")
-    )
+    Group {
+        if let service = try? JSONPersistenceService() {
+            SupervisorDetailView(
+                viewModel: SupervisorListViewModel(persistenceService: service),
+                supervisor: Supervisor(name: "Prof. Dr. Smith", email: "smith@university.edu", department: "Computer Science")
+            )
+        } else {
+            Text("Failed to create JSONPersistenceService for preview.")
+        }
+    }
 }

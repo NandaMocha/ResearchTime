@@ -31,7 +31,7 @@ class SupervisorListViewModel: ObservableObject {
 
     @MainActor
     func updateSupervisor(_ supervisor: Supervisor) async throws {
-        try persistenceService.updateSupervisor(supervisor)
+        try await persistenceService.updateSupervisor(supervisor)
         await loadSupervisors()
     }
 }

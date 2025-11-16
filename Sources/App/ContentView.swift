@@ -5,6 +5,7 @@ struct ContentView: View {
     @StateObject private var themeManager = ThemeManager()
     @StateObject private var sidebarVM: SidebarViewModel
     @StateObject private var topicListVM: TopicListViewModel
+    @StateObject private var startPageVM: StartPageViewModel
     @StateObject private var supervisorListVM: SupervisorListViewModel
     @StateObject private var settingsVM: SettingsViewModel
 
@@ -13,13 +14,13 @@ struct ContentView: View {
     @State private var showSettings = false
     @State private var sidebarCollapsed = false
 
-    init() {
-        let persistence = try! JSONPersistenceService()
-        _persistenceService = StateObject(wrappedValue: persistence)
-        _sidebarVM = StateObject(wrappedValue: SidebarViewModel(persistenceService: persistence))
-        _topicListVM = StateObject(wrappedValue: TopicListViewModel(persistenceService: persistence))
-        _supervisorListVM = StateObject(wrappedValue: SupervisorListViewModel(persistenceService: persistence))
-        _settingsVM = StateObject(wrappedValue: SettingsViewModel(persistenceService: persistence))
+    init(persistenceService: JSONPersistenceService) {
+        _persistenceService = StateObject(wrappedValue: persistenceService)
+        _sidebarVM = StateObject(wrappedValue: SidebarViewModel(persistenceService: persistenceService))
+        _topicListVM = StateObject(wrappedValue: TopicListViewModel(persistenceService: persistenceService))
+        _startPageVM = StateObject(wrappedValue: StartPageViewModel(persistenceService: persistenceService))
+        _supervisorListVM = StateObject(wrappedValue: SupervisorListViewModel(persistenceService: persistenceService))
+        _settingsVM = StateObject(wrappedValue: SettingsViewModel(persistenceService: persistenceService))
     }
 
     var body: some View {
@@ -86,7 +87,7 @@ struct ContentView: View {
                             )
                         } else {
                             StartPageView(
-                                viewModel: StartPageViewModel(persistenceService: persistenceService),
+                                viewModel: startPageVM,
                                 onAddSupervisionSession: { showNewSupervisionForm = true }
                             )
                         }

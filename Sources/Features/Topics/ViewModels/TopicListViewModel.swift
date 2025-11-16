@@ -41,14 +41,17 @@ class TopicListViewModel: ObservableObject {
 
     @MainActor
     func updateTopic(_ topic: Topic) async throws {
-        try persistenceService.updateTopic(topic)
+        try await persistenceService.updateTopic(topic)
         await loadTopics()
     }
 
     @MainActor
     func deleteTopic(_ topic: Topic) async throws {
-        // In v1, topics cannot be deleted; implement soft delete if needed
-        print("Deleting topic is not supported in v1")
+        throw NSError(
+            domain: "TopicListViewModel",
+            code: -1,
+            userInfo: [NSLocalizedDescriptionKey: "Topic deletion is not supported in v1"]
+        )
     }
 
     func getSupervisor(id: UUID) -> Supervisor? {

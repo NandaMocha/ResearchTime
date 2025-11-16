@@ -3,8 +3,8 @@ import Foundation
 struct SupervisionSession: Identifiable, Codable {
     let id: UUID
     var dateTime: Date
-    var supervisorId: UUID
-    var topicId: UUID
+    var supervisorId: UUID?
+    var topicId: UUID?
     var title: String
     var keywords: [String]
     var questions: [Question]
@@ -18,8 +18,8 @@ struct SupervisionSession: Identifiable, Codable {
     init(
         id: UUID = UUID(),
         dateTime: Date = Date(),
-        supervisorId: UUID = UUID(),
-        topicId: UUID = UUID(),
+        supervisorId: UUID? = nil,
+        topicId: UUID? = nil,
         title: String = "",
         keywords: [String] = [],
         questions: [Question] = [],

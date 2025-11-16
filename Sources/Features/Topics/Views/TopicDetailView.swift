@@ -179,8 +179,14 @@ struct TopicDetailView: View {
 }
 
 #Preview {
-    TopicDetailView(
-        viewModel: TopicListViewModel(persistenceService: try! JSONPersistenceService()),
-        topic: Topic(name: "Thesis Research", relatedSupervisorIds: [])
-    )
+    Group {
+        if let service = try? JSONPersistenceService() {
+            TopicDetailView(
+                viewModel: TopicListViewModel(persistenceService: service),
+                topic: Topic(name: "Thesis Research", relatedSupervisorIds: [])
+            )
+        } else {
+            Text("Failed to create JSONPersistenceService for preview.")
+        }
+    }
 }

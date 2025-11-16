@@ -1,10 +1,9 @@
 import SwiftUI
+import AppKit
 
 struct RichTextEditorView: View {
     @Binding var text: String
     let placeholder: String
-
-    @State private var editor: NSTextView?
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -14,7 +13,7 @@ struct RichTextEditorView: View {
                     .font(.body)
                     .foregroundColor(.appTextSecondary)
                     .padding(8)
-                    .pointerEvents(.none)
+                    .allowsHitTesting(false)
             }
 
             // Rich text editor with formatting toolbar

@@ -69,25 +69,41 @@ class JSONPersistenceService: PersistenceService {
 
     // MARK: - Supervisor Operations
 
-    func createSupervisor(_ supervisor: Supervisor) throws {
+    func createSupervisor(_ supervisor: Supervisor) async throws {
         var mutableSupervisor = supervisor
         mutableSupervisor.createdAt = Date()
         mutableSupervisor.updatedAt = Date()
 
-        queue.async(flags: .barrier) { [weak self] in
-            self?.supervisors.append(mutableSupervisor)
-            try? self?.saveSupervisors()
+        try await withCheckedThrowingContinuation { continuation in
+            queue.async(flags: .barrier) { [self] in
+                supervisors.append(mutableSupervisor)
+                do {
+                    try saveSupervisors()
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
         }
     }
 
-    func updateSupervisor(_ supervisor: Supervisor) throws {
+    func updateSupervisor(_ supervisor: Supervisor) async throws {
         var mutableSupervisor = supervisor
         mutableSupervisor.updatedAt = Date()
 
-        queue.async(flags: .barrier) { [weak self] in
-            if let index = self?.supervisors.firstIndex(where: { $0.id == supervisor.id }) {
-                self?.supervisors[index] = mutableSupervisor
-                try? self?.saveSupervisors()
+        try await withCheckedThrowingContinuation { continuation in
+            queue.async(flags: .barrier) { [self] in
+                if let index = supervisors.firstIndex(where: { $0.id == supervisor.id }) {
+                    supervisors[index] = mutableSupervisor
+                    do {
+                        try saveSupervisors()
+                        continuation.resume()
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                } else {
+                    continuation.resume()
+                }
             }
         }
     }
@@ -106,25 +122,41 @@ class JSONPersistenceService: PersistenceService {
 
     // MARK: - Topic Operations
 
-    func createTopic(_ topic: Topic) throws {
+    func createTopic(_ topic: Topic) async throws {
         var mutableTopic = topic
         mutableTopic.createdAt = Date()
         mutableTopic.updatedAt = Date()
 
-        queue.async(flags: .barrier) { [weak self] in
-            self?.topics.append(mutableTopic)
-            try? self?.saveTopics()
+        try await withCheckedThrowingContinuation { continuation in
+            queue.async(flags: .barrier) { [self] in
+                topics.append(mutableTopic)
+                do {
+                    try saveTopics()
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
         }
     }
 
-    func updateTopic(_ topic: Topic) throws {
+    func updateTopic(_ topic: Topic) async throws {
         var mutableTopic = topic
         mutableTopic.updatedAt = Date()
 
-        queue.async(flags: .barrier) { [weak self] in
-            if let index = self?.topics.firstIndex(where: { $0.id == topic.id }) {
-                self?.topics[index] = mutableTopic
-                try? self?.saveTopics()
+        try await withCheckedThrowingContinuation { continuation in
+            queue.async(flags: .barrier) { [self] in
+                if let index = topics.firstIndex(where: { $0.id == topic.id }) {
+                    topics[index] = mutableTopic
+                    do {
+                        try saveTopics()
+                        continuation.resume()
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                } else {
+                    continuation.resume()
+                }
             }
         }
     }
@@ -143,25 +175,41 @@ class JSONPersistenceService: PersistenceService {
 
     // MARK: - SupervisionSession Operations
 
-    func createSession(_ session: SupervisionSession) throws {
+    func createSession(_ session: SupervisionSession) async throws {
         var mutableSession = session
         mutableSession.createdAt = Date()
         mutableSession.updatedAt = Date()
 
-        queue.async(flags: .barrier) { [weak self] in
-            self?.sessions.append(mutableSession)
-            try? self?.saveSessions()
+        try await withCheckedThrowingContinuation { continuation in
+            queue.async(flags: .barrier) { [self] in
+                sessions.append(mutableSession)
+                do {
+                    try saveSessions()
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
         }
     }
 
-    func updateSession(_ session: SupervisionSession) throws {
+    func updateSession(_ session: SupervisionSession) async throws {
         var mutableSession = session
         mutableSession.updatedAt = Date()
 
-        queue.async(flags: .barrier) { [weak self] in
-            if let index = self?.sessions.firstIndex(where: { $0.id == session.id }) {
-                self?.sessions[index] = mutableSession
-                try? self?.saveSessions()
+        try await withCheckedThrowingContinuation { continuation in
+            queue.async(flags: .barrier) { [self] in
+                if let index = sessions.firstIndex(where: { $0.id == session.id }) {
+                    sessions[index] = mutableSession
+                    do {
+                        try saveSessions()
+                        continuation.resume()
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                } else {
+                    continuation.resume()
+                }
             }
         }
     }
@@ -196,10 +244,17 @@ class JSONPersistenceService: PersistenceService {
         }
     }
 
-    func deleteSession(id: UUID) throws {
-        queue.async(flags: .barrier) { [weak self] in
-            self?.sessions.removeAll { $0.id == id }
-            try? self?.saveSessions()
+    func deleteSession(id: UUID) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            queue.async(flags: .barrier) { [self] in
+                sessions.removeAll { $0.id == id }
+                do {
+                    try saveSessions()
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
         }
     }
 }

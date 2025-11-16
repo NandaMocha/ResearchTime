@@ -2,7 +2,7 @@ import SwiftUI
 
 struct StartPageView: View {
     @ObservedObject var viewModel: StartPageViewModel
-    var onAddSupervisionSession: (() -> Void)? = nil
+    var onAddSupervisionSession: (() -> Void)?
 
     var body: some View {
         VStack(spacing: 32) {
@@ -87,7 +87,13 @@ struct StartPageView: View {
 }
 
 #Preview {
-    StartPageView(
-        viewModel: StartPageViewModel(persistenceService: try! JSONPersistenceService())
-    )
+    Group {
+        if let service = try? JSONPersistenceService() {
+            StartPageView(
+                viewModel: StartPageViewModel(persistenceService: service)
+            )
+        } else {
+            Text("Failed to create JSONPersistenceService for preview.")
+        }
+    }
 }

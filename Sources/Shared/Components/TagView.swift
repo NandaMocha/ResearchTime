@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TagView: View {
     let tags: [String]
-    var onRemove: ((String) -> Void)? = nil
+    var onRemove: ((String) -> Void)?
     let maxTagsToShow = 3
 
     var body: some View {
@@ -80,7 +80,7 @@ struct TagInputView: View {
                 .onSubmit {
                     addTag()
                 }
-                .onChange(of: currentInput) { oldValue, newValue in
+                .onChange(of: currentInput) { _, newValue in
                     if newValue.contains(",") {
                         let tag = newValue.replacingOccurrences(of: ",", with: "").trimmingCharacters(in: .whitespaces)
                         if !tag.isEmpty {
