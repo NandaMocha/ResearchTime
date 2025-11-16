@@ -34,7 +34,10 @@ struct TopicDetailView: View {
                 .padding(16)
             }
             .background(Color.appSecondary)
-            .borderBottom(height: 1, color: .appBorder)
+
+            Divider()
+                .frame(height: 1)
+                .foregroundColor(.appBorder)
 
             // Content
             ScrollView {

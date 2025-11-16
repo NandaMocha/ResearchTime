@@ -32,7 +32,10 @@ struct SettingsView: View {
                 .padding(16)
             }
             .background(Color.appSecondary)
-            .borderBottom(height: 1, color: .appBorder)
+
+            Divider()
+                .frame(height: 1)
+                .foregroundColor(.appBorder)
 
             // Content
             TabView {
@@ -43,15 +46,12 @@ struct SettingsView: View {
                             .font(.headline)
                             .foregroundColor(.appText)
 
-                        VStack(alignment: .leading, spacing: 8) {
+                        Picker("Appearance Mode", selection: $themeManager.appearanceMode) {
                             ForEach(AppearanceMode.allCases, id: \.self) { mode in
-                                RadioButton(
-                                    label: mode.label,
-                                    isSelected: themeManager.appearanceMode == mode,
-                                    action: { themeManager.appearanceMode = mode }
-                                )
+                                Text(mode.label).tag(mode)
                             }
                         }
+                        .pickerStyle(.radioGroup)
                     }
                     .padding(16)
                     .background(Color.appSecondary.opacity(0.3))
@@ -249,26 +249,6 @@ struct SettingsView: View {
                 .font(.subheadline)
                 .foregroundColor(.appText)
         }
-    }
-}
-
-struct RadioButton: View {
-    let label: String
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(isSelected ? .appInfo : .appTextSecondary)
-                Text(label)
-                    .foregroundColor(.appText)
-                Spacer()
-            }
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
     }
 }
 

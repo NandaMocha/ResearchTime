@@ -385,11 +385,3 @@ struct ActionItemView: View {
     }
 }
 
-extension View {
-    func borderBottom(height: CGFloat, color: Color) -> some View {
-        VStack(spacing: 0) {
-            self
-            Divider().frame(height: height).foregroundColor(color)
-        }
-    }
-}
