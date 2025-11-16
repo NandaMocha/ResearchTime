@@ -174,9 +174,14 @@ struct TopicDetailView: View {
         updated.name = editedName
         updated.relatedSupervisorIds = editedSupervisorIds
 
-        Task {
-            try await viewModel.updateTopic(updated)
-            isEditing = false
+        Task { @MainActor in
+            do {
+                try await viewModel.updateTopic(updated)
+                isEditing = false
+            } catch {
+                print("Failed to update topic: \(error)")
+                // TODO: Present an error state in the UI instead of just printing.
+            }
         }
     }
 }

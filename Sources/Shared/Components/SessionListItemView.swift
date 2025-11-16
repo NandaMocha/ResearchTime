@@ -46,14 +46,14 @@ struct SessionListItemView: View {
             // Question and action item counts
             HStack(spacing: 16) {
                 Label(
-                    countLabel(session.questions.count, singular: "quest", plural: "quests"),
+                    countLabel(session.questions.count, singular: "question", plural: "questions"),
                     systemImage: "questionmark.circle"
                 )
                 .font(.caption2)
                 .foregroundColor(.appInfo)
 
                 Label(
-                    countLabel(session.actionItems.count, singular: "item", plural: "item(s)"),
+                    countLabel(session.actionItems.count, singular: "item", plural: "items"),
                     systemImage: "checkmark.circle"
                 )
                 .font(.caption2)

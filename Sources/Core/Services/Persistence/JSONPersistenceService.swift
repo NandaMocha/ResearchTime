@@ -1,5 +1,22 @@
 import Foundation
 
+enum PersistenceError: Error, LocalizedError {
+    case supervisorNotFound
+    case topicNotFound
+    case sessionNotFound
+
+    var errorDescription: String? {
+        switch self {
+        case .supervisorNotFound:
+            return "The requested supervisor was not found."
+        case .topicNotFound:
+            return "The requested topic was not found."
+        case .sessionNotFound:
+            return "The requested session was not found."
+        }
+    }
+}
+
 class JSONPersistenceService: PersistenceService {
     private let fileManager = FileManager.default
     private let baseDirectory: URL
@@ -102,7 +119,7 @@ class JSONPersistenceService: PersistenceService {
                         continuation.resume(throwing: error)
                     }
                 } else {
-                    continuation.resume()
+                    continuation.resume(throwing: PersistenceError.supervisorNotFound)
                 }
             }
         }
@@ -155,7 +172,7 @@ class JSONPersistenceService: PersistenceService {
                         continuation.resume(throwing: error)
                     }
                 } else {
-                    continuation.resume()
+                    continuation.resume(throwing: PersistenceError.topicNotFound)
                 }
             }
         }
@@ -208,7 +225,7 @@ class JSONPersistenceService: PersistenceService {
                         continuation.resume(throwing: error)
                     }
                 } else {
-                    continuation.resume()
+                    continuation.resume(throwing: PersistenceError.sessionNotFound)
                 }
             }
         }

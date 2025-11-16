@@ -66,12 +66,10 @@ struct SupervisorDetailView: View {
                         } else {
                             VStack(spacing: 8) {
                                 ForEach(viewModel.sessions) { session in
-                                    if let topic = getTopic(for: session) {
-                                        SessionListItemView(
-                                            session: session,
-                                            supervisorName: supervisor.name
-                                        )
-                                    }
+                                    SessionListItemView(
+                                        session: session,
+                                        supervisorName: supervisor.name
+                                    )
                                 }
                             }
                         }
@@ -182,14 +180,14 @@ struct SupervisorDetailView: View {
         updated.department = editedDepartment.isEmpty ? nil : editedDepartment
 
         Task {
-            try await viewModel.updateSupervisor(updated)
-            isEditing = false
+            do {
+                try await viewModel.updateSupervisor(updated)
+                isEditing = false
+            } catch {
+                print("Error updating supervisor: \(error)")
+                // TODO: Present an error state in the UI instead of just printing.
+            }
         }
-    }
-
-    private func getTopic(for session: SupervisionSession) -> Topic? {
-        // This would need to be fetched from the persistence service
-        nil
     }
 }
 

@@ -119,6 +119,10 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
-        .preferredColorScheme(.dark)
+    if let service = try? JSONPersistenceService() {
+        ContentView(persistenceService: service)
+            .preferredColorScheme(.dark)
+    } else {
+        Text("Failed to create JSONPersistenceService for preview.")
+    }
 }
